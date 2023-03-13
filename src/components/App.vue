@@ -19,24 +19,9 @@
       @delete="deletePost"
       v-if="!isPostLoading"
     />
+    <my-loader v-if="isPostLoading" />
 
-    <div>
-      <my-loader v-if="isPostLoading"/>
-    </div>
-
-    <div class="page-wrapper">
-      <div 
-        class="page"
-        v-if="!isPostLoading"
-        v-for="pageNumber in totalPages"
-        :class="{
-         'current-page': page === pageNumber
-        }"
-        @click="changePage(pageNumber)"
-       >
-        {{ pageNumber }}
-      </div>
-    </div>
+    <div ref="observer" class="observer"></div>
   </div>
 </template>
 
@@ -59,7 +44,7 @@ export default {
       selectedSort: "",
       searchQuery: "",
       page: 1,
-      limit: 5,
+      limit: 10,
       totalPages: 0,
       sortOptions: [
         { value: "title", name: "By title" },
@@ -104,15 +89,46 @@ export default {
         this.isPostLoading = false;
       }
     },
-    changePage(currentPage) {
-      this.page = currentPage;
-      //    this.fetchPosts();
-      //    or in watch object
-    }
+    async loadMorePosts() {
+      try {
+        this.page += 1;
+        const response = await axios.get(
+          "https://jsonplaceholder.typicode.com/posts",
+          {
+            params: {
+              _page: this.page,
+              _limit: this.limit,
+            },
+          }
+        );
+
+        this.totalPages = Math.ceil(
+          response.headers["x-total-count"] / this.limit
+        );
+
+        this.posts = [...this.posts, ...response.data];
+      } catch (e) {
+        alert("error");
+      } 
+    },
   },
 
   mounted() {
     this.fetchPosts();
+
+    let options = {
+      rootMargin: "0px",
+      threshold: 1.0,
+    };
+
+    const callback = (entries, observer) => {
+      if(entries[0].isIntersecting && this.page < this.totalPages) {
+         this.loadMorePosts();
+      }
+    }
+
+    let observer = new IntersectionObserver(callback, options);
+    observer.observe(this.$refs.observer);
   },
   computed: {
     sortedPosts() {
@@ -130,11 +146,6 @@ export default {
       return this.sortedPosts;
     },
   },
-  watch: {
-   page() {
-      this.fetchPosts();
-   }
-  }
 };
 </script>
 
@@ -154,25 +165,7 @@ export default {
 .app {
   margin: 20px 15px 0px 15px;
 }
-
-.page-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  margin: 20px 0px 50px 0px;
-}
-.page {
-  border: 2px solid teal;
-  padding: 5px 10px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  margin-right: 10px;
-  transition: all 0.3s ease;
-}
-
-.current-page {
-   border: 2px solid rgb(53, 203, 203);
-   color: teal;
-   background-color: rgba(255, 228, 185, 0.3);
+.observer {
+   min-height: 20px;
 }
 </style>
