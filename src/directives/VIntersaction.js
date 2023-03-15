@@ -1,22 +1,33 @@
-export default {
-   name: 'intersaction',
-  mounted(el, binding) {
-    let options = {
-      rootMargin: "0px",
-      threshold: 1.0,
-    };
+let page = 1;
+let totalPages = 0;
 
-    console.log()
-
-    const componentInstance = binding.instance;
-
-    const callback = (entries, observer) => {
-      if (entries[0].isIntersecting && componentInstance.page < componentInstance.totalPages) {
-         componentInstance.loadMorePosts();
-      }
-    };
-
-    let observer = new IntersectionObserver(callback, options);
-    observer.observe(el);
-  },
-};
+const intersection = {
+   name: 'intersection',
+   mounted(el, binding) {
+     const options = {
+       rootMargin: '0px',
+       threshold: 1.0,
+     };
+ 
+     const { loadMorePosts } = binding.value;
+ 
+     const callback = (entries, observer) => {
+       const [entry] = entries;
+ 
+       if (entry.isIntersecting && page < totalPages) {
+         loadMorePosts();
+       }
+     };
+ 
+     const observer = new IntersectionObserver(callback, options);
+     observer.observe(el);
+   },
+ 
+   updated(_, binding) {
+     page = binding.value.page;
+     totalPages = binding.value.totalPages;
+   },
+ };
+ 
+ export default intersection;
+ 

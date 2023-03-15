@@ -22,7 +22,7 @@
      />
      <my-loader v-if="isPostLoading" />
  
-     <div v-intersaction class="observer"></div>
+     <div v-intersection="{loadMorePosts, page, totalPages}" class="observer"></div>
    </div>
  </template>
  

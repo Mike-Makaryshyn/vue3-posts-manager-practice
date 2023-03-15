@@ -2,7 +2,7 @@
  <header class="header">
    <div class="home-link" @click="$router.push('/')">Vue 3</div>
    <div class="header__btns">
-      <my-button @click="$router.push('/posts')">Posts</my-button>
+      <my-button style="margin-right: 10px;" @click="$router.push('/posts')">Posts</my-button>
       <my-button @click="$router.push('/About')">About</my-button>
    </div>
   </header>
