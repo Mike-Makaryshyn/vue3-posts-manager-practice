@@ -2,7 +2,7 @@
   <div>
     <div v-if="posts.length > 0">
       <h3>List of posts</h3>
-      <transition-group name="posts" class="container" tag="div">
+      <transition-group name="posts" class="container list-wrapper" tag="div">
         <post-item
           v-for="post in posts"
           name="post"
@@ -43,6 +43,10 @@ export default {
   position: relative;
   padding: 0;
 }
+.post {
+   margin-right: 15px;
+}
+
 .posts-enter-active,
 .posts-leave-active {
   transition: all 0.5s ease;
