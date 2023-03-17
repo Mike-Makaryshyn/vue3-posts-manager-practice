@@ -3,8 +3,9 @@
    <div class="home-link" @click="$router.push('/')">Vue 3</div>
    <div class="header__btns">
       <my-button style="margin-right: 10px;" @click="$router.push('/posts')">Posts</my-button>
-      <my-button @click="$router.push('/about')">About</my-button>
-      <my-button @click="$router.push('/store')">Store</my-button>
+      <my-button style="margin-right: 10px;" @click="$router.push('/about')">About</my-button>
+      <my-button style="margin-right: 10px;" @click="$router.push('/store')">Store</my-button>
+      <my-button @click="$router.push('/composition')">Composition Api</my-button>
    </div>
   </header>
 </template>
